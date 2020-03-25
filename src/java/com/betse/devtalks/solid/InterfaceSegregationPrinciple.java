@@ -54,3 +54,65 @@ class OldFashionedPrinter implements Machine {
 //        issue here - old fashioned printer does not have scan
     }
 }
+
+// Solution: Interface segregation - split to categories
+
+interface Printer {
+    void print(Document d);
+}
+
+interface Scanner {
+    void scan(Document d);
+}
+
+interface Fax {
+    void fax(Document d);
+}
+
+class JustAPrinter implements Printer {
+
+    @Override
+    public void print(Document d) {
+        // implementation
+    }
+}
+
+class Photocopier implements Printer, Scanner {
+
+    @Override
+    public void print(Document d) {
+        //
+    }
+
+    @Override
+    public void scan(Document d) {
+        //
+    }
+}
+
+// another solution: new interface that extends other interfaces
+
+interface MultiFunctionDevice extends Printer, Scanner {
+}
+
+class MultiFunctionMachine implements MultiFunctionDevice {
+
+    // decorator pattern - reuse functionality that you already have
+    private Printer printer;
+    private Scanner scanner;
+
+    public MultiFunctionMachine(Printer printer, Scanner scanner) {
+        this.printer = printer;
+        this.scanner = scanner;
+    }
+
+    @Override
+    public void print(Document d) {
+        printer.print(d);
+    }
+
+    @Override
+    public void scan(Document d) {
+        scanner.scan(d);
+    }
+}
