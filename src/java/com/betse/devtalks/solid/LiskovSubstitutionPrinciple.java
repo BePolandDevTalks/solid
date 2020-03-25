@@ -66,6 +66,17 @@ class Square extends Rectangle {
     }
 }
 
+class RectangleFactory {
+
+    public static Rectangle newRectangle(int width, int height) {
+        return new Rectangle(width, height);
+    }
+
+    public static Rectangle newSquare(int size) {
+        return new Rectangle(size, size);
+    }
+}
+
 class LiskovDemo {
 
     static void calculateRectangleArea(Rectangle r) {
@@ -83,6 +94,9 @@ class LiskovDemo {
         Square sq = new Square();
         sq.setHeight(5);
         calculateRectangleArea(sq);
+
+        Rectangle factorySquare = RectangleFactory.newSquare(20);
+        calculateRectangleArea(factorySquare);
     }
 
 }
