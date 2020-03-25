@@ -38,6 +38,10 @@ class Rectangle {
                 ", height=" + height +
                 '}';
     }
+
+    public boolean isSquare() {
+        return width == height;
+    }
 }
 
 class Square extends Rectangle {
