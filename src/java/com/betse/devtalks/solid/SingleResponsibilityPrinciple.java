@@ -1,5 +1,8 @@
 package com.betse.devtalks.solid;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +22,15 @@ class Journal {
     public String toString() {
         return String.join(System.lineSeparator(), entries);
     }
+
+    public void save(String filename) throws FileNotFoundException {
+        try (PrintStream out = new PrintStream(filename)) {
+            out.println(toString());
+        }
+    }
+
+    public void load(String filename) {}
+    public void load(URL url) {}
 }
 
 class Demo {
