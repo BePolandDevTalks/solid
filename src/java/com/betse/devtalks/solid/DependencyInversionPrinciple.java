@@ -17,7 +17,7 @@ class Person {
     }
 }
 
-class Relationships { // low-level module related to data storage (does not have any business logic)
+class Relationships implements RelationshipBrowser { // low-level module related to data storage (does not have any business logic)
     private List<Triplet<Person, Relationship, Person>> relations = new ArrayList<>();
 
     public void addParentAndChild(Person parent, Person child) {
@@ -25,24 +25,29 @@ class Relationships { // low-level module related to data storage (does not have
         relations.add(new Triplet<>(child, Relationship.CHILD, parent));
     }
 
-    // we exposing a getter to storage for everyone
-    public List<Triplet<Person, Relationship, Person>> getRelations() {
-        return relations;
+    @Override
+    public List<Person> findAllChildrenOf(String name) {
+        return relations.stream()
+                .filter(tr -> Objects.equals(tr.getFirst().name, name)
+                        && tr.getSecond() == Relationship.PARENT)
+                .map(Triplet::getThird)
+                .collect(Collectors.toList());
     }
+}
 
+// Solution - introduce an abstraction
+interface RelationshipBrowser {
+    List<Person> findAllChildrenOf(String name);
 }
 
 class Research { // high-level module - allows to perform operation on low-level modules - has business logic
 
-    // constructor takes low-level module as dependency - violating Dependency Inversion Principle
-    public Research(Relationships relationships) {
-        List<Triplet<Person, Relationship, Person>> relations = relationships.getRelations();
-        relations.stream()
-                .filter(tr -> tr.getFirst().name.equals("John")
-                        && tr.getSecond() == Relationship.PARENT)
-                .forEach(tr -> System.out.println(
-                        "John has a child called " + tr.getThird().name
-                ));
+    //     constructor that uses abstraction and allows to change implementation in low-level class
+    public Research(RelationshipBrowser browser) {
+        List<Person> children = browser.findAllChildrenOf("John");
+        for (Person child : children) {
+            System.out.println("John has a child called " + child.name);
+        }
     }
 }
 
